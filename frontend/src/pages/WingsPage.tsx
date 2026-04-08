@@ -27,7 +27,7 @@ type UpdateWingData = Parameters<typeof updateWing>[1]
 export default function WingsPage() {
 
     const { addToast } = useToast()
-    const { isFormOpen, showForm, showFilterBar, clear } = usePageControls();
+    const { isFormOpen, showForm, clear } = usePageControls();
 
     const [allWings, setAllWings] = useState<Wing[]>([])
     const [editing, setEditing] = useState<WingForm | null>(null)
