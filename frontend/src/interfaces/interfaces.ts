@@ -1,15 +1,30 @@
 import type { AxiosResponse } from 'axios';
  
+// ─── ENUMOK ───────────────────────────────────────────────────────────────────
+
+export enum StaffRole {
+  RECEPTIONIST="Recepciós", HOUSEKEEPER="Takarító", CONCIERGE="Házfelügyelő", MANAGER="Manager"
+}
+
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────
 
 export type Wing = {
-  id: number,
-  name: string,
-  description: string,
-  managerName: string,
-  staffCount: number,
+  id: number
+  name: string
+  description: string
+  managerName: string
+  staffCount: number
   roomCount: number
 }
+
+export type Staff = {
+  id: number
+  name: string
+  role: keyof typeof StaffRole
+  email: string
+  wingId: number
+}
+
 
 export type SimResult = {
   status: string,
@@ -26,6 +41,14 @@ export type WingCreateDto = {
  
 export type WingUpdateDto = WingCreateDto
 
+export type StaffCreateDto = {
+  name: string
+  role: StaffRole
+  email: string
+  wingId: number
+}
+
+export type StaffUpdateDto = StaffCreateDto
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
  
