@@ -1,5 +1,5 @@
 import { useWings } from "../hooks/useWings";
-import { GuestTier, RoomType } from "../interfaces/interfaces";
+import { RoomType } from "../interfaces/interfaces";
 import type { RoomForm } from "../pages/RoomsPage";
 
 
