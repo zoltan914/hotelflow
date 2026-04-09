@@ -1,7 +1,7 @@
 package com.hotelflow.dto.booking;
 
+import com.hotelflow.dto.review.ReviewResponseDto;
 import com.hotelflow.model.BookingStatus;
-import com.hotelflow.model.GuestTier;
 
 import java.time.LocalDate;
 
@@ -12,6 +12,7 @@ public record BookingResponseDto(
         Long wingId,
         LocalDate checkInDate,
         LocalDate checkOutDate,
-        BookingStatus status
+        BookingStatus status,
+        ReviewResponseDto review
 ) {
 }

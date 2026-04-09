@@ -2,12 +2,17 @@ package com.hotelflow.mappers;
 
 import com.hotelflow.dto.booking.BookingResponseDto;
 import com.hotelflow.model.Booking;
+import com.hotelflow.model.Review;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class BookingMapper {
+
+    private final ReviewMapper reviewMapper;
 
     public List<BookingResponseDto> toBookingResponseDtoList(List<Booking> bookings) {
         return bookings.stream()
@@ -15,6 +20,7 @@ public class BookingMapper {
     }
 
     public BookingResponseDto toBookingResponseDto(Booking booking) {
+        Review review = booking.getReview();
         return new BookingResponseDto(
                 booking.getId(),
                 booking.getGuest().getId(),
@@ -22,7 +28,8 @@ public class BookingMapper {
                 booking.getRoom().getWing().getId(),
                 booking.getCheckInDate(),
                 booking.getCheckOutDate(),
-                booking.getStatus()
+                booking.getStatus(),
+                review != null ? reviewMapper.toReviewResponseDto(review) : null
         );
     }
 

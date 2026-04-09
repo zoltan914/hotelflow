@@ -14,6 +14,10 @@ export enum RoomType {
   STANDARD="Standard", DELUXE="Deluxe", SUITE="Suite", PENTHOUSE="Penthouse"
 }
 
+export enum BookingStatus {
+  PENDING="Beérkezett", ACTIVE="Aktív", CHECKED_OUT="Kijelentkezett", CANCELLED="Törölve"
+}
+
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────
 
 export type Wing = {
@@ -61,6 +65,26 @@ export type Room = {
 }
 
 
+export type Review = {
+  id: number
+  bookingId: number
+  stars: number
+  comment: string
+  specialRequests: string
+}
+
+
+export type Booking = {
+  id: number
+  guestId: number,
+  roomId: number,
+  wingId: number,
+  checkInDate: Date,
+  checkOutDate: Date,
+  status: keyof typeof BookingStatus 
+  review: Review
+}
+
 export type SimResult = {
   status: string,
   message: string[]
@@ -104,6 +128,20 @@ export type RoomCreateDto = {
 
 export type RoomUpdateDto = RoomCreateDto
 
+export type BookingCreateDto = {
+  guestId: number
+  roomId: number
+  checkInDate: Date
+  checkOutDate: Date
+}
+
+export type ReviewCreateDto = {
+  stars: number
+  comment: string
+  specialRequests: string
+}
+
+export type ReviewUpdateDto = ReviewCreateDto
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
  

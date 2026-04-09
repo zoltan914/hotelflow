@@ -13,7 +13,12 @@ import type {
   GuestUpdateDto,
   Room,
   RoomCreateDto,
-  RoomUpdateDto
+  RoomUpdateDto,
+  Booking,
+  BookingCreateDto,
+  Review,
+  ReviewCreateDto,
+  ReviewUpdateDto
 } from '../interfaces/interfaces';
 
 // ─── AXIOS INSTANCE ───────────────────────────────────────────────────────────
@@ -66,6 +71,18 @@ export const createRoom    = (data: RoomCreateDto): ApiResponse<Room> => api.pos
 export const udpateRoom    = (id: number, data: RoomUpdateDto): ApiResponse<Room> => api.put(`/rooms/${id}`, data)
 export const deleteRoom    = (id: number): ApiResponse<void> => api.delete(`/rooms/${id}`)
 
+// ─── BOOKING ──────────────────────────────────────────────────────────────
+
+export const getAllBookings= (): ApiResponse<Booking[]> => api.get('/bookings')
+export const creteBooking  = (data: BookingCreateDto): ApiResponse<Booking> => api.post('/bookings', data) 
+export const checkIn       = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/checkin`)
+export const checkOut      = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/checkout`)
+export const cancel        = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/cancel`)
+
+// ─── REVIEW ──────────────────────────────────────────────────────────────
+
+export const createReview  = (id: number, data: ReviewCreateDto): ApiResponse<Review> => api.post(`/bookings/${id}/review`, data)
+export const updateReview  = (id: number, data: ReviewUpdateDto): ApiResponse<Review> => api.put(`/bookings/${id}/review`, data)
 
 // ─── SIMULATION ───────────────────────────────────────────────────────────────
 
