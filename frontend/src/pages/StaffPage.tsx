@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { createStaff, deleteStaff, getAllStaff, getAllWings, updateStaff } from "../services/api";
@@ -26,13 +26,15 @@ type UpdateStaffData = Parameters<typeof updateStaff>[1]
 
 export default function StaffPage() {
     const { addToast } = useToast()
-    const { isFormOpen, showForm, clear } = usePageControls();
+    const { isFormOpen, showForm, showFilterBar, isFilterBarOpen, clear } = usePageControls();
 
     const [allWings, setAllWings] = useState<Wing[]>([])
     const [allStaff, setAllStaff] = useState<Staff[]>([])
 
     const [newStaff, setNewStaff] = useState<StaffForm>(EMPTY_FORM)
     const [editing, setEditing] = useState<StaffForm | null>(null)
+
+    const [selectedWingId, setSelectedWingId] = useState<number | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,6 +44,13 @@ export default function StaffPage() {
         }
         fetchData()
     }, [])
+
+        // FILTER LOGIC: Derived state ensures UI stays in sync after Create/Delete
+    const filteredStaff = useMemo(() => {
+        return allStaff
+                .filter(s => !selectedWingId || s.wingId === selectedWingId)
+    }, [allStaff, selectedWingId])
+
     
     const updateNew = (field: keyof StaffForm, value: string | number | StaffRole | null) => {
         setNewStaff(prev => ({ ...prev, [field]: value }))
@@ -96,7 +105,13 @@ export default function StaffPage() {
             <div className="show-form-wrapper">
                 <h2>Személyzet</h2>
                 <button className="btn btn-primary" onClick={showForm}>＋</button>
-                <button className="btn btn-ghost" onClick={clear}><span>✕</span></button>
+                <button className="btn btn-ghost" onClick={showFilterBar}><span>🔍</span></button>
+                <button className="btn btn-ghost" onClick={() => {
+                    clear()
+                    setSelectedWingId(null)
+                }}>
+                    ✕
+                </button>
             </div>
             <p className="page-desc">Személyzet létrehozása, szerkesztése, törlése.</p>
 
@@ -109,8 +124,27 @@ export default function StaffPage() {
                 onClose={clear}
             />}
 
+            {isFilterBarOpen &&
+                <div className="filter-controls">
+                    <div className="filter-bar">
+                        <div className="elem">
+                            <div className={`filter-chip ${selectedWingId === null ? 'active' : ''}`} onClick={() => setSelectedWingId(null)}>Összes</div>
+                            {allWings.map(wing => 
+                                <div 
+                                    key={`filter-wing-${wing.id}`} 
+                                    className={`filter-chip ${selectedWingId === wing.id ? 'active' : ''}`} 
+                                    onClick={() => setSelectedWingId(wing.id)}
+                                >
+                                    {wing.name}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            }
+
             <div className="card-grid">
-                {allStaff.map(staff => {
+                {filteredStaff.map(staff => {
                     const isEditing = editing?.id === staff.id
                     return (
                         <div className="card" key={`staff-card-${staff.id}`}>
