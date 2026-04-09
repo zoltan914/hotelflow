@@ -15,7 +15,7 @@ function App() {
     <BrowserRouter>
       <div>
         <header>
-          <div className="logo">Medi<span>Core</span></div>
+          <div className="logo">Hotel<span>Flow</span></div>
           <div className="header-meta">
             <span className="status-dot"></span> H2 in-memory · Spring Boot
           </div>
