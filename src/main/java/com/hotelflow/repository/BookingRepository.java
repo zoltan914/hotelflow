@@ -15,15 +15,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
         SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
         from Booking b
-        where b.status = :bookingStatus 
-        AND b.room.id = :roomId 
+        where b.status = :bookingStatus
+        AND b.room.id = :roomId
         AND (
             b.checkOutDate IS NULL
             AND b.status = :bookingStatus
         ) OR (
             :checkInDateRequest <= b.checkOutDate
             AND :checkOutDateRequest >= b.checkInDate
-            
         )
     """)
     boolean hasOverlappingBookingByDateAndStatus(
@@ -32,6 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("bookingStatus") BookingStatus bookingStatus,
             @Param("roomId") Long roomId
     );
+
 }
 /*
      a| ------------- |b

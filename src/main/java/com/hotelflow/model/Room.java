@@ -33,7 +33,7 @@ public class Room {
     private int capacity;
 
     @Builder.Default
-    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Booking> bookings = new ArrayList<>();
 
 }

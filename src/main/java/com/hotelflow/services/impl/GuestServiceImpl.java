@@ -68,7 +68,7 @@ public class GuestServiceImpl implements GuestService {
         if (hasActiveBooking) {
             throw new IllegalStateException("A vendég nem törölhető mert van aktív foglalása");
         }
-        guest.getBookings().forEach(booking -> booking.setGuest(null));
+
         guestRepository.delete(guest);
     }
 }
