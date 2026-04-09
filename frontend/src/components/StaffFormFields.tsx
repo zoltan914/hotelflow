@@ -1,5 +1,5 @@
 import { useWings } from "../hooks/useWings";
-import { StaffRole, type Wing } from "../interfaces/interfaces";
+import { StaffRole } from "../interfaces/interfaces";
 import type { StaffForm } from "../pages/StaffPage";
 
 interface WingFormFieldsProps {
