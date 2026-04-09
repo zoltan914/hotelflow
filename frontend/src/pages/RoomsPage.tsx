@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { RoomType, type Room, type Wing } from "../interfaces/interfaces";
-import { getAllRooms, getAllWings, type createRoom, type udpateRoom } from "../services/api";
+import { createRoom, deleteRoom, getAllRooms, getAllWings, udpateRoom } from "../services/api";
+import { RoomFormFields } from "../components/RoomFormFields";
 
 
 export type RoomForm = {
@@ -56,6 +57,46 @@ export default function RoomsPage() {
         fetchData()
     }, [])
 
+    const handleCreate = async () => {
+        if (!newRoom.roomNumber.trim() || !newRoom.pricePerNight || !newRoom.capacity || !newRoom.roomType || !newRoom.wingId ) {
+            addToast('Az összes mező kitöltése kötelező!', 'error');
+            return
+        }
+        try {
+            const createdRoom = await createRoom(newRoom as CreateRoomData)
+            setAllRooms(prev => [...prev, createdRoom.data])
+            addToast('A szoba sikeresen létrehozva');
+            setNewRoom(EMPTY_FORM)
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
+        }
+    }
+
+    const handleUpdate = async (roomId: number) => {
+        if (!editing) return
+        try {
+            const {id, ...updateData} = editing
+            const updatedRoom = await udpateRoom(roomId, updateData as UpdateRoomData)
+            setAllRooms(prev => prev.map(d => d.id === roomId ? updatedRoom.data : d))
+            addToast('A szoba adatai sikeresen frissítve')
+            setEditing(null)
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        if (!window.confirm('Biztosan törölni szeretnéd ezt a szobát?')) return
+        try {
+            await deleteRoom(id)
+            setAllRooms(prev => prev.filter(d => d.id !== id))
+            addToast('A szoba sikeresen törölve')
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Hiba történt a törlés során', 'error')
+        }
+    }
+
+
     const getCapacityFillColor = (currentCapacity : number) => {
         return  currentCapacity >= 100 ? 'full':
                 currentCapacity >= 90 ? 'danger':
@@ -74,6 +115,14 @@ export default function RoomsPage() {
                 }}> ✕ </button>
             </div>
             <p className="page-desc">Szobák regisztrálása, szerkesztése, törlése.</p>
+            
+            {isFormOpen && <RoomFormFields
+                isEditing={false}
+                valueState={newRoom}
+                onUpdate={updateNew}
+                onCreate={handleCreate}
+                onClose={clear}
+            />}
 
             <div className="card-grid">
                 {allRooms.map(room => {
@@ -119,23 +168,24 @@ export default function RoomsPage() {
                             <div className="card-sub"><strong>Max férőhely: </strong> 
                                 {room.capacity}
                             </div>
-                            <div className="card-sub"><strong>Vendégek száma: </strong> 
+                            <div className="card-sub"><strong>Foglalások száma: </strong> 
                                 {room.bookedNightsCount}
                             </div>
                             
-                            {/*
-                            {isEditing && <StaffFormFields
+                            
+                            {isEditing && <RoomFormFields
                                 isEditing={true}
                                 valueState={editing}
                                 onUpdate={updateEditing}
-                                onCreate={() => handleUpdate(staff.id)}
+                                onCreate={() => handleUpdate(room.id)}
                                 onClose={() => setEditing(null)}
                             />}
 
                             <div className="card-actions">
-                                <button className="btn btn-ghost btn-sm" onClick={() => startEditing(staff)}>✏️ Szerkesztés</button>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(staff.id)}>🗑 Törlés</button>
-                            </div> */}
+                                <button className="btn btn-ghost btn-sm" onClick={() => startEditing(room)}>✏️ Szerkesztés</button>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(room.id)}>🗑 Törlés</button>
+                            </div>
+
                         </div>
                     )
                 })}

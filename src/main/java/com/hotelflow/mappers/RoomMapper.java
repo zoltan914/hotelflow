@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.hotelflow.model.BookingStatus.ACTIVE;
+import static com.hotelflow.model.BookingStatus.PENDING;
 
 @Component
 public class RoomMapper {
@@ -22,7 +23,9 @@ public class RoomMapper {
         List<Booking> bookings = room.getBookings();
         Wing wing = room.getWing();
         long bookedNightsCount = bookings.stream()
-                .filter(booking -> booking.getStatus().equals(ACTIVE))
+                .filter(booking ->
+                        booking.getStatus().equals(ACTIVE) ||
+                        booking.getStatus().equals(PENDING))
                 .count();
         return new RoomResponseDto(
                 room.getId(),

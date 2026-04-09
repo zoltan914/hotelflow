@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.hotelflow.model.BookingStatus.ACTIVE;
+import static com.hotelflow.model.BookingStatus.PENDING;
 
 @Service
 @Slf4j
@@ -70,7 +71,9 @@ public class RoomServiceImpl implements RoomService {
         Room room = getRoomById(id);
         List<Booking> bookings = room.getBookings();
         boolean hasActiveBooking = bookings.stream()
-                .anyMatch(booking -> booking.getStatus().equals(ACTIVE));
+                .anyMatch(booking ->
+                        booking.getStatus().equals(ACTIVE) ||
+                        booking.getStatus().equals(PENDING));
         if (hasActiveBooking) {
             throw new IllegalStateException("A szoba nem törölhető mert van aktív foglalása");
         }

@@ -78,7 +78,7 @@ export default function GuestsPage() {
     }
 
     const handleDelete = async (id: number) => {
-        if (!window.confirm('Biztosan törölni szeretnéd ezt a személyzetet?')) return
+        if (!window.confirm('Biztosan törölni szeretnéd ezt a vendéget?')) return
         try {
             await deleteGuest(id)
             setAllGuests(prev => prev.filter(d => d.id !== id))
