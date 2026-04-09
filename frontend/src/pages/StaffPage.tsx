@@ -116,7 +116,6 @@ export default function StaffPage() {
             <p className="page-desc">Személyzet létrehozása, szerkesztése, törlése.</p>
 
             {isFormOpen && <StaffFormFields
-                wings={allWings}
                 isEditing={false}
                 valueState={newStaff}
                 onUpdate={updateNew}
@@ -162,7 +161,6 @@ export default function StaffPage() {
                             <div className="card-sub"><strong>Email:</strong> {staff.email}</div>
 
                             {isEditing && <StaffFormFields
-                                wings={allWings} 
                                 isEditing={true}
                                 valueState={editing}
                                 onUpdate={updateEditing}

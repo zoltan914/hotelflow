@@ -1,8 +1,8 @@
+import { useWings } from "../hooks/useWings";
 import { StaffRole, type Wing } from "../interfaces/interfaces";
 import type { StaffForm } from "../pages/StaffPage";
 
 interface WingFormFieldsProps {
-    wings: Wing[];
     isEditing: boolean;
     valueState: StaffForm | null;
     onUpdate: (field: keyof Omit<StaffForm, 'id'>, value: string | number | StaffRole | null) => void;
@@ -10,7 +10,8 @@ interface WingFormFieldsProps {
     onClose: () => void;
 }
 
-export const StaffFormFields = ( { wings, isEditing, valueState, onUpdate, onCreate, onClose } :WingFormFieldsProps ) => {
+export const StaffFormFields = ( { isEditing, valueState, onUpdate, onCreate, onClose } :WingFormFieldsProps ) => {
+    const wings = useWings()
     return (
         <div className={isEditing ? 'form-row-editing' : 'form-row'}>
             <input 
