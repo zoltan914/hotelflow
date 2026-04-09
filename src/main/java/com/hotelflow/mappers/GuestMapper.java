@@ -2,11 +2,12 @@ package com.hotelflow.mappers;
 
 import com.hotelflow.dto.guest.GuestResponseDto;
 import com.hotelflow.model.Booking;
-import com.hotelflow.model.BookingStatus;
 import com.hotelflow.model.Guest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.hotelflow.model.BookingStatus.ACTIVE;
 
 @Component
 public class GuestMapper {
@@ -19,7 +20,7 @@ public class GuestMapper {
     public GuestResponseDto toGuestResponseDto(Guest guest) {
         List<Booking> bookings = guest.getBookings();
         Booking activeBooking = bookings.stream()
-                .filter(booking -> booking.getStatus().equals(BookingStatus.ACTIVE))
+                .filter(booking -> booking.getStatus().equals(ACTIVE))
                 .findAny().orElse(null);
         return new GuestResponseDto(
                 guest.getId(),
