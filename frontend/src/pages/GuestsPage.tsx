@@ -25,7 +25,7 @@ type UpdateGuestData = Parameters<typeof udpateGuest>[1]
 
 export default function GuestsPage() {
     const { addToast } = useToast()
-    const { isFormOpen, showForm, showFilterBar, isFilterBarOpen, clear } = usePageControls();
+    const { isFormOpen, showForm, clear } = usePageControls();
 
     const [allGuests, setAllGuests] = useState<Guest[]>([])
     
