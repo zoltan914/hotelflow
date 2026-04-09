@@ -30,6 +30,6 @@ public class Guest {
     private GuestTier tier;
 
     @Builder.Default
-    @OneToMany(mappedBy = "guest", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "guest", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 }
