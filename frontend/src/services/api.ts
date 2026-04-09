@@ -7,7 +7,10 @@ import type {
   WingUpdateDto,
   Staff,
   StaffCreateDto,
-  StaffUpdateDto
+  StaffUpdateDto,
+  Guest,
+  GuestCreateDto,
+  GuestUpdateDto
 } from '../interfaces/interfaces';
 
 // ─── AXIOS INSTANCE ───────────────────────────────────────────────────────────
@@ -46,6 +49,12 @@ export const createStaff    = (data: StaffCreateDto): ApiResponse<Staff> => api.
 export const updateStaff    = (id: number, data: StaffUpdateDto): ApiResponse<Staff> => api.put(`/staff/${id}`, data)
 export const deleteStaff    = (id: number): ApiResponse<void> => api.delete(`/staff/${id}`)
 
+// ─── GUEST ──────────────────────────────────────────────────────────────
+
+export const getAllGuests   = (): ApiResponse<Guest[]> => api.get('/guests')
+export const createGuest    = (data: GuestCreateDto): ApiResponse<Guest> => api.post('/guests', data)
+export const udpateGuest    = (id: number, data: GuestUpdateDto): ApiResponse<Guest> => api.put(`/guests/${id}`, data)
+export const deleteGuest    = (id: number): ApiResponse<void> => api.delete(`/guests/${id}`)
 
 // ─── SIMULATION ───────────────────────────────────────────────────────────────
 

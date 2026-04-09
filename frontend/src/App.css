@@ -34,6 +34,8 @@
   --teal-bg:      rgba(15, 118, 110, 0.08);
   --gold:         #b45309;
   --gold-bg:      rgba(180, 83, 9, 0.08);
+  --silver:       #a5a09d;
+  --silver-bg:    #d1cdcb;
 
   --radius:       8px;
   --radius-lg:    12px;
@@ -487,6 +489,7 @@ input:disabled, select:disabled { opacity: 0.45; cursor: not-allowed; }
 .badge.purple   { background: var(--purple-bg); color: var(--purple); border-color: rgba(124,58,237,0.2); }
 .badge.teal     { background: var(--teal-bg);   color: var(--teal);   border-color: rgba(15,118,110,0.2); }
 .badge.gold     { background: var(--gold-bg);   color: var(--gold);   border-color: rgba(180,83,9,0.2); }
+.badge.silver   { background: var(--silver-bg); color: var(--silver); border-color: rgba(214, 209, 205, 0.2); }
 .badge.hidden   { display: none; }
 
 /* ── TABLE ── */

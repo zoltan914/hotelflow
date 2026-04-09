@@ -45,7 +45,6 @@ export default function StaffPage() {
         fetchData()
     }, [])
 
-        // FILTER LOGIC: Derived state ensures UI stays in sync after Create/Delete
     const filteredStaff = useMemo(() => {
         return allStaff
                 .filter(s => !selectedWingId || s.wingId === selectedWingId)
@@ -153,7 +152,7 @@ export default function StaffPage() {
                                     <span className="badge blue" title="Beosztás">
                                         {StaffRole[staff.role]}
                                     </span>
-                                    &nbsp;&nbsp;<span className="badge gold" title="szobák száma">
+                                    &nbsp;&nbsp;<span className="badge gold" title="Szárny">
                                         {allWings.find(w => w.id === staff.wingId)?.name}
                                     </span>
                                 </div>

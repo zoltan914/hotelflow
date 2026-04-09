@@ -6,6 +6,10 @@ export enum StaffRole {
   RECEPTIONIST="Recepciós", HOUSEKEEPER="Takarító", CONCIERGE="Házfelügyelő", MANAGER="Manager"
 }
 
+export enum GuestTier {
+  STANDARD="Standard", SILVER="Silver", GOLD="Arany", PLATINUM="Platina"
+}
+
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────
 
 export type Wing = {
@@ -23,6 +27,23 @@ export type Staff = {
   role: keyof typeof StaffRole
   email: string
   wingId: number
+}
+
+export type ActiveBooking = {
+  id: number
+  roomNumber: string
+  checkInDate: Date
+  checkOutDate: Date
+}
+
+export type Guest = {
+  id: number
+  name: string
+  passportNumber: string
+  email: string
+  tier: keyof typeof GuestTier
+  activeBooking: ActiveBooking
+  bookingCount: number
 }
 
 
@@ -49,6 +70,15 @@ export type StaffCreateDto = {
 }
 
 export type StaffUpdateDto = StaffCreateDto
+
+export type GuestCreateDto = {
+  name: string
+  passportNumber: string
+  email: string
+  tier: GuestTier
+}
+
+export type GuestUpdateDto = GuestCreateDto
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
  
