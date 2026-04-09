@@ -10,6 +10,10 @@ export enum GuestTier {
   STANDARD="Standard", SILVER="Silver", GOLD="Arany", PLATINUM="Platina"
 }
 
+export enum RoomType {
+  STANDARD="Standard", DELUXE="Deluxe", SUITE="Suite", PENTHOUSE="Penthouse"
+}
+
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────
 
 export type Wing = {
@@ -46,6 +50,16 @@ export type Guest = {
   bookingCount: number
 }
 
+export type Room = {
+  id: number
+  roomNumber: string
+  wingId: number
+  roomType: keyof typeof RoomType
+  pricePerNight: number
+  capacity: number
+  bookedNightsCount: number
+}
+
 
 export type SimResult = {
   status: string,
@@ -79,6 +93,17 @@ export type GuestCreateDto = {
 }
 
 export type GuestUpdateDto = GuestCreateDto
+
+export type RoomCreateDto = {
+  roomNumber: string
+  wingId: number
+  roomType: RoomType
+  pricePerNight: number
+  capacity: number
+}
+
+export type RoomUpdateDto = RoomCreateDto
+
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
  

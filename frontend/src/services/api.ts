@@ -10,7 +10,10 @@ import type {
   StaffUpdateDto,
   Guest,
   GuestCreateDto,
-  GuestUpdateDto
+  GuestUpdateDto,
+  Room,
+  RoomCreateDto,
+  RoomUpdateDto
 } from '../interfaces/interfaces';
 
 // ─── AXIOS INSTANCE ───────────────────────────────────────────────────────────
@@ -55,6 +58,14 @@ export const getAllGuests   = (): ApiResponse<Guest[]> => api.get('/guests')
 export const createGuest    = (data: GuestCreateDto): ApiResponse<Guest> => api.post('/guests', data)
 export const udpateGuest    = (id: number, data: GuestUpdateDto): ApiResponse<Guest> => api.put(`/guests/${id}`, data)
 export const deleteGuest    = (id: number): ApiResponse<void> => api.delete(`/guests/${id}`)
+
+// ─── ROOM ──────────────────────────────────────────────────────────────
+
+export const getAllRooms   = (): ApiResponse<Room[]> => api.get('/rooms')
+export const createRoom    = (data: RoomCreateDto): ApiResponse<Room> => api.post('/rooms', data)
+export const udpateRoom    = (id: number, data: RoomUpdateDto): ApiResponse<Room> => api.put(`/rooms/${id}`, data)
+export const deleteRoom    = (id: number): ApiResponse<void> => api.delete(`/rooms/${id}`)
+
 
 // ─── SIMULATION ───────────────────────────────────────────────────────────────
 
