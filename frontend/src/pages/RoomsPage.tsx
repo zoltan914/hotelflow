@@ -63,8 +63,6 @@ export default function RoomsPage() {
                 ''
     }   
 
-    console.log(allRooms)
-
     return (
         <div>
             <div className="show-form-wrapper">
@@ -118,6 +116,13 @@ export default function RoomsPage() {
                                     </div>
                                 </div>
                             </div>
+                            <div className="card-sub"><strong>Szoba kapacitása: </strong> 
+                                {room.capacity}
+                            </div>
+                            <div className="card-sub"><strong>Vendégek száma: </strong> 
+                                {room.bookedNightsCount}
+                            </div>
+                            
                             {/*
                             {isEditing && <StaffFormFields
                                 isEditing={true}
