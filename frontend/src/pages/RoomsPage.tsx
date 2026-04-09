@@ -116,7 +116,7 @@ export default function RoomsPage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="card-sub"><strong>Szoba kapacitása: </strong> 
+                            <div className="card-sub"><strong>Max férőhely: </strong> 
                                 {room.capacity}
                             </div>
                             <div className="card-sub"><strong>Vendégek száma: </strong> 
