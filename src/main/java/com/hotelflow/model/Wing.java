@@ -24,11 +24,11 @@ public class Wing {
     private String managerName;    // szárnyvezető
 
     @Builder.Default
-    @OneToMany(mappedBy = "wing", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "wing", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Staff> staff = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "wing", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "wing", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Room> rooms = new ArrayList<>();
 
 }

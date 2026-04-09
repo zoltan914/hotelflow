@@ -31,7 +31,7 @@ public class Staff {
     private Wing wing;
 
     @Builder.Default
-    @OneToMany(mappedBy = "assignedStaff", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "assignedStaff", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<ServiceRequest> serviceRequests = new ArrayList<>();
 
 }

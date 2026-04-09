@@ -24,6 +24,9 @@ public class Booking {
     @ManyToOne
     private Room room;
 
+    @OneToOne(mappedBy = "booking", orphanRemoval = true, cascade =  CascadeType.MERGE, fetch = FetchType.EAGER)
+    private Review review;
+
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
 
