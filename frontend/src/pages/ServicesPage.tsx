@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { type ServiceRequest, ServiceType, type Guest, type Staff, GuestTier } from "../interfaces/interfaces";
-import { createServiceRequest, getAllGuests, getAllServiceRequest, getAllStaff } from "../services/api";
+import { createServiceRequest, deleteServiceRequest, getAllGuests, getAllServiceRequest, getAllStaff } from "../services/api";
 import { ServiceFormFields } from "../components/ServiceFormFields";
 import { toLocalDateString } from "../utils/dateutils";
 import { SearchInput } from "../components/SearchInput";
@@ -59,8 +59,6 @@ export default function ServicesPage() {
                 )
     }, [allServices, allStaff, selectedServiceType, debouncedSearch])
     
-    
-
     const handleCreate = async () => {
         if (!newServiceRequest.guestId || !newServiceRequest.staffId || !newServiceRequest.requestDate || !newServiceRequest.type) {
             addToast('A mezők kitöltése kötelező!', 'error');
@@ -78,8 +76,18 @@ export default function ServicesPage() {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
         }
     }
-    
 
+    const handleDelete = async (serviceId: number) => {
+        if (!window.confirm('Biztosan törölni szeretnéd ezt az szolgáltatást?')) return
+        try {
+            await deleteServiceRequest(serviceId)
+            setAllServices(prev => prev.filter(service => service.id !== serviceId))
+            addToast('A szolgáltatás sikeresen törölve')
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Hiba történt a törlés során', 'error')
+        }
+    }
+    
     return (
         <div>
             <div className="show-form-wrapper">
@@ -147,6 +155,7 @@ export default function ServicesPage() {
                             <th>Kérés dátuma</th>
                             <th>Típus</th>
                             <th>Leírás</th>
+                            <th>Műveletek</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +178,9 @@ export default function ServicesPage() {
                                     <td>{service.requestDate?.toString()}</td>
                                     <td>{ServiceType[service.type]}</td>
                                     <td>{service?.description}</td>
+                                    <td>
+                                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(service.id)}>🗑 Törlés</button>
+                                    </td>
                                 </tr>
                             )
                         })}
