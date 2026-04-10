@@ -168,19 +168,23 @@ export default function BookingsPage() {
                             const isReviewOpen = selectedId === booking?.id
                             return (
                                 <>
-                                    <tr key={`booking-row-${booking.id}`} style={{cursor: booking?.review ? 'pointer' : ''}}>
+                                    <tr 
+                                      key={`booking-row-${booking.id}`} 
+                                      style={{cursor: booking?.review ? 'pointer' : ''}}
+                                      onClick={() => {
+                                          if (!booking.review) return;
+                                          if (selectedId === booking.id) {
+                                            setSelectedId(null)
+                                          } else {
+                                            setSelectedId(booking.id)
+                                          }
+                                        }}
+                                    >
                                         <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                         <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                         <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                         <td 
-                                          onClick={() => {
-                                            if (!booking.review) return;
-                                            if (selectedId === booking.id) {
-                                                setSelectedId(null)
-                                            } else {
-                                                setSelectedId(booking.id)
-                                            }
-                                          }}
+                                          
                                         >
                                             {booking.review ? star.repeat(booking.review.stars) : ''}
                                         </td>
@@ -224,7 +228,11 @@ export default function BookingsPage() {
                                             </tr>
                                             <tr className="review-block">
                                                 <td colSpan={8}>
-                                                    <button className="btn btn-primary" onClick={() => handleCreateReview(booking.id)}>Mentés</button>
+                                                    <button className="btn btn-primary" onClick={() => handleCreateReview(booking.id)}
+                                                        style={{marginRight: '10px'}}>Mentés</button>
+                                                    <button className="btn btn-primary" onClick={() => setSelectedId(null)}>
+                                                        ✕
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </>
