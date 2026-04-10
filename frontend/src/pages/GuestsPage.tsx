@@ -100,7 +100,7 @@ export default function GuestsPage() {
             </div>
             <p className="page-desc">Vendégek regisztrálása, szerkesztése, törlése.</p>
 
-             {isFormOpen && <GuestFormFields
+            {isFormOpen && <GuestFormFields
                 isEditing={false}
                 valueState={newGuest}
                 onUpdate={updateNew}

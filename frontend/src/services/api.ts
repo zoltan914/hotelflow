@@ -74,7 +74,7 @@ export const deleteRoom    = (id: number): ApiResponse<void> => api.delete(`/roo
 // ─── BOOKING ──────────────────────────────────────────────────────────────
 
 export const getAllBookings= (): ApiResponse<Booking[]> => api.get('/bookings')
-export const creteBooking  = (data: BookingCreateDto): ApiResponse<Booking> => api.post('/bookings', data) 
+export const createBooking  = (data: BookingCreateDto): ApiResponse<Booking> => api.post('/bookings', data) 
 export const checkIn       = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/checkin`)
 export const checkOut      = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/checkout`)
 export const cancel        = (id: number): ApiResponse<Booking> => api.put(`/bookings/${id}/cancel`)

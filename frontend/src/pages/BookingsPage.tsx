@@ -1,11 +1,39 @@
-import { useEffect, useMemo, useState } from "react"
-import { cancel, checkIn, checkOut, createReview, getAllBookings, getAllGuests, getAllRooms, getAllWings, updateReview } from "../services/api"
-import { BookingStatus, type Booking, type Guest, type Room, type Wing } from "../interfaces/interfaces"
+import React, { useEffect, useState } from "react"
+import { cancel, checkIn, checkOut, createBooking, createReview, getAllBookings, getAllGuests, getAllRooms, getAllWings } from "../services/api"
+import { BookingStatus, type ApiResponse, type Booking, type Guest, type Room, type Wing } from "../interfaces/interfaces"
 import { useToast } from "../context/ToastContext";
+import { TableSeparator } from "../components/TableSeparator";
+import { usePageControls } from "../hooks/usePageControls";
+import { BookingFormFields } from "../components/BookingFormFields";
+import { toLocalDateString } from "../utils/dateutils";
 
 const star = "⭐";
 
-export type ReviewForm = {
+enum Ops {
+    CHECK_IN, CHECK_OUT, CANCEL
+}
+
+const operationMap: Record<Ops, (id: number) => ApiResponse<Booking>> = {
+    [Ops.CHECK_IN]: checkIn,
+    [Ops.CHECK_OUT]: checkOut,
+    [Ops.CANCEL]: cancel,
+};
+
+export type BookingForm = {
+    guestId: number | null,
+    roomId: number | null,
+    checkInDate: Date | null,
+    checkOutDate: Date | null
+}
+
+const EMPTY_BOOKING_FORM : BookingForm = {
+    guestId: null,
+    roomId: null,
+    checkInDate: null,
+    checkOutDate: null
+}
+
+type ReviewForm = {
     stars: number,
     comment: string,
     specialRequests: string
@@ -19,6 +47,7 @@ const EMPTY_REVIEW_FORM: ReviewForm = {
 
 export default function BookingsPage() {
     const { addToast } = useToast()
+    const { isFormOpen, showForm, clear } = usePageControls();
     
     const [allBookings, setAllBookings] = useState<Booking[]>([])
     const [allRooms, setAllRooms] = useState<Room[]>([])
@@ -30,6 +59,11 @@ export default function BookingsPage() {
     const [newRievew, setNewReview] = useState<ReviewForm>(EMPTY_REVIEW_FORM)
     const updateNewReview = (field: keyof ReviewForm, value: string | number | null) => {
         setNewReview(prev => ({ ...prev, [field]: value }))
+    }
+
+    const [newBooking, setNewBooking] = useState<BookingForm>(EMPTY_BOOKING_FORM)
+    const updateNewBooking = (field: keyof BookingForm, value: string | number | Date | null) => {
+        setNewBooking(prev => ({ ...prev, [field]: value}))
     }
   
     useEffect(() => {
@@ -44,35 +78,11 @@ export default function BookingsPage() {
         fetchData()
     }, [])
 
-    const handleCheckIn = async (bookingId: number) => {
-        if (!bookingId) return
+    const handleOperations = async (bookingId: number, key: Ops) => {
+        if (!bookingId || !operationMap[key]) return;
         try {
-            const checkedInBooking = await checkIn(bookingId)
-            setAllBookings(prev => prev.map(d => d.id === bookingId ? checkedInBooking.data : d))
-            addToast('A foglalás adatai sikeresen frissítve')
-            setSelectedId(null)
-        } catch (err: any) {
-            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
-        }
-    }
-
-    const handleCheckOut = async (bookingId: number) => {
-        if (!bookingId) return
-        try {
-            const checkedOutBooking = await checkOut(bookingId)
-            setAllBookings(prev => prev.map(d => d.id === bookingId ? checkedOutBooking.data : d))
-            addToast('A foglalás adatai sikeresen frissítve')
-            setSelectedId(null)
-        } catch (err: any) {
-            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
-        }
-    }
-
-    const handleCancel = async (bookingId: number) => {
-        if (!bookingId) return
-        try {
-            const cancelledBooking = await cancel(bookingId)
-            setAllBookings(prev => prev.map(d => d.id === bookingId ? cancelledBooking.data : d))
+            const bookingResponse = await operationMap[key](bookingId);
+            setAllBookings(prev => prev.map(d => d.id === bookingId ? bookingResponse.data : d))
             addToast('A foglalás adatai sikeresen frissítve')
             setSelectedId(null)
         } catch (err: any) {
@@ -95,20 +105,46 @@ export default function BookingsPage() {
         }
     }
 
-    const Separator = () => {
-        return (
-            <tbody>
-                <tr>
-                    <td colSpan={8} style={{ padding: '0' }}>
-                        <div style={{ borderTop: '3px solid var(--border-dark)', margin: '0' }} />
-                    </td>
-                </tr>
-            </tbody>
-        )
+    
+    const handleCreateBooking = async () => {
+        if (!newBooking.roomId || !newBooking.guestId || !newBooking.checkInDate) {
+            addToast('A mezők kitöltése kötelező!', 'error');
+            return
+        }
+        try {
+            const createdBooking = await createBooking({
+                ...newBooking,
+                checkInDate: new Date(toLocalDateString(newBooking.checkInDate)),
+                checkOutDate: newBooking.checkOutDate ? new Date(toLocalDateString(newBooking.checkOutDate)) : null
+            })
+            setAllBookings(prev => [...prev, createdBooking.data])
+            addToast('A foglalás sikeres');
+            setNewBooking(EMPTY_BOOKING_FORM)
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
+        }
     }
+
 
     return (
         <div>
+            <div className="show-form-wrapper">
+                <h2>Foglalások</h2>
+                <button className="btn btn-primary" onClick={showForm}> ＋ </button>
+                <button className="btn btn-ghost" onClick={() => {
+                    clear()
+                    setSelectedId(null)
+                }}> ✕ </button>
+            </div>
+            <p className="page-desc">Foglalások felvétele, értékelés hozzáadása, státusz műveletek.</p>
+
+            {isFormOpen && <BookingFormFields
+                valueState={newBooking}
+                onUpdate={updateNewBooking}
+                onCreate={handleCreateBooking}
+                onClose={clear}
+            />}
+
             <div className="table-wrapper">
                 <table>
                     <thead>
@@ -133,17 +169,17 @@ export default function BookingsPage() {
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
                                     <td>{booking.checkInDate.toString()}</td>
-                                    <td>{booking.checkOutDate.toString()}</td>
+                                    <td>{booking.checkOutDate?.toString()}</td>
                                     <td><span className="table-badge red">{BookingStatus[booking.status]}</span></td>
                                     <td>
-                                        <button className="btn btn-primary" onClick={() => handleCheckIn(booking.id)}>Bejelentkezés</button>
-                                        <button style={{marginLeft: '10px'}} className="btn btn-primary" onClick={() => handleCancel(booking.id)}>Lemondás</button>
+                                        <button className="btn btn-primary" onClick={() => handleOperations(booking.id, Ops.CHECK_IN)}>Bejelentkezés</button>
+                                        <button style={{marginLeft: '10px'}} className="btn btn-primary" onClick={() => handleOperations(booking.id, Ops.CANCEL)}>Lemondás</button>
                                     </td>
                                 </tr>
                             )
                         })}
                     </tbody>
-                    <Separator />
+                    <TableSeparator />
                     
                     <tbody>
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.ACTIVE).map(booking => {
@@ -154,20 +190,20 @@ export default function BookingsPage() {
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
                                     <td>{booking.checkInDate.toString()}</td>
-                                    <td>{booking.checkOutDate.toString()}</td>
+                                    <td>{booking.checkOutDate?.toString()}</td>
                                     <td><span className="table-badge gold">{BookingStatus[booking.status]}</span></td>
-                                    <td><button className="btn btn-primary" onClick={() => handleCheckOut(booking.id)}>Kijelentkezés</button></td>
+                                    <td><button className="btn btn-primary" onClick={() => handleOperations(booking.id, Ops.CHECK_OUT)}>Kijelentkezés</button></td>
                                 </tr>
                             )
                         })}
                     </tbody>
-                    <Separator />
+                    <TableSeparator />
 
                     <tbody>
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.CHECKED_OUT).map(booking => {
                             const isReviewOpen = selectedId === booking?.id
                             return (
-                                <>
+                                <React.Fragment key={`checked-out-${booking.id} `}>
                                     <tr 
                                       key={`booking-row-${booking.id}`} 
                                       style={{cursor: booking?.review ? 'pointer' : ''}}
@@ -179,17 +215,15 @@ export default function BookingsPage() {
                                             setSelectedId(booking.id)
                                           }
                                         }}
-                                    >
+                                      >
                                         <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                         <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                         <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
-                                        <td 
-                                          
-                                        >
+                                        <td>
                                             {booking.review ? star.repeat(booking.review.stars) : ''}
                                         </td>
                                         <td>{booking.checkInDate.toString()}</td>
-                                        <td>{booking.checkOutDate.toString()}</td>
+                                        <td>{booking.checkOutDate?.toString()}</td>
                                         <td><span className="table-badge green">{BookingStatus[booking.status]}</span></td>
                                         <td>{!booking.review && <button className="btn btn-primary" onClick={() => setSelectedId(booking.id)}>Értékelés</button>}</td>
                                     </tr>
@@ -238,11 +272,11 @@ export default function BookingsPage() {
                                         </>
                                         :<></>
                                     }
-                                </>
+                                </React.Fragment>
                             )
                         })}
                     </tbody>
-                    <Separator />
+                    <TableSeparator />
 
                     <tbody>
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.CANCELLED).map(booking => {
@@ -253,7 +287,7 @@ export default function BookingsPage() {
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
                                     <td>{booking.checkInDate.toString()}</td>
-                                    <td>{booking.checkOutDate.toString()}</td>
+                                    <td>{booking.checkOutDate?.toString()}</td>
                                     <td><span className="table-badge silver">{BookingStatus[booking.status]}</span></td>
                                     <td></td>
                                 </tr>

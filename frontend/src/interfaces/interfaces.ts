@@ -129,10 +129,10 @@ export type RoomCreateDto = {
 export type RoomUpdateDto = RoomCreateDto
 
 export type BookingCreateDto = {
-  guestId: number
-  roomId: number
-  checkInDate: Date
-  checkOutDate: Date
+  guestId: number | null
+  roomId: number | null
+  checkInDate: Date | null
+  checkOutDate: Date | null
 }
 
 export type ReviewCreateDto = {
