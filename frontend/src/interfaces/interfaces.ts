@@ -18,6 +18,10 @@ export enum BookingStatus {
   PENDING="Függőben", ACTIVE="Aktív", CHECKED_OUT="Kijelentkezett", CANCELLED="Törölve"
 }
 
+export enum ServiceType {
+  ROOM_SERVICE="Szobaszervíz", HOUSEKEEPING="Takarítás", MAINTENANCE="Karbantartás", CONCIERGE="Portaszolgálat", SPA="Wellness"
+}
+
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────
 
 export type Wing = {
@@ -85,6 +89,16 @@ export type Booking = {
   review: Review
 }
 
+export type ServiceRequest = {
+  id: number,
+  guestId: number,
+  staffId: number,
+  requestDate: Date,
+  type: keyof typeof ServiceType,
+  description: string
+}
+
+
 export type SimResult = {
   status: string,
   message: string[]
@@ -142,6 +156,15 @@ export type ReviewCreateDto = {
 }
 
 export type ReviewUpdateDto = ReviewCreateDto
+
+export type ServiceRequestCreateDto = {
+  guestId: number | null
+  staffId: number | null
+  requestDate: Date | null
+  type: ServiceType | null
+  description: string
+}
+
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
  

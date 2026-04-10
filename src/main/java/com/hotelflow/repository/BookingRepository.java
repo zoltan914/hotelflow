@@ -18,10 +18,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         where b.status = :bookingStatus
         AND b.room.id = :roomId
         AND (
-            b.checkOutDate IS NULL
+            (b.checkOutDate IS NULL)
+            OR
+            (:checkOutDateRequest IS NULL)
             OR (
-                :checkInDateRequest < b.checkOutDate
-                AND :checkOutDateRequest > b.checkInDate
+                :checkInDateRequest <= b.checkOutDate
+                AND :checkOutDateRequest >= b.checkInDate
             )
         )
     """)

@@ -36,12 +36,14 @@ export const BookingFormFields = ({ valueState, onUpdate, onCreate, onClose } :W
                 ))}
             </select>
             <DatePicker
+                placeholderText="Bejelentkezés dátuma"
                 dateFormat="yyyy.MM.dd"
                 selected={valueState?.checkInDate} 
                 onChange={(date: Date | null) => onUpdate('checkInDate', date)} 
                 className="date-picker"
             />
             <DatePicker
+                placeholderText="Kijelentkezés dátuma"
                 dateFormat="yyyy.MM.dd"
                 selected={valueState?.checkOutDate} 
                 onChange={(date: Date | null) => onUpdate('checkOutDate', date)} 

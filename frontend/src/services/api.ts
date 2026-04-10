@@ -18,7 +18,9 @@ import type {
   BookingCreateDto,
   Review,
   ReviewCreateDto,
-  ReviewUpdateDto
+  ReviewUpdateDto,
+  ServiceRequest,
+  ServiceRequestCreateDto
 } from '../interfaces/interfaces';
 
 // ─── AXIOS INSTANCE ───────────────────────────────────────────────────────────
@@ -83,6 +85,13 @@ export const cancel        = (id: number): ApiResponse<Booking> => api.put(`/boo
 
 export const createReview  = (id: number, data: ReviewCreateDto): ApiResponse<Review> => api.post(`/bookings/${id}/review`, data)
 export const updateReview  = (id: number, data: ReviewUpdateDto): ApiResponse<Review> => api.put(`/bookings/${id}/review`, data)
+
+// ─── SERVICES ──────────────────────────────────────────────────────────────
+export const getAllServiceRequest = (): ApiResponse<ServiceRequest[]> => api.get('/services')
+export const createServiceRequest = (data: ServiceRequestCreateDto): ApiResponse<ServiceRequest> => api.post('/services', data)
+export const deleteServiceRequest = (id: number): ApiResponse<void> => api.delete(`/services/${id}`)
+
+
 
 // ─── SIMULATION ───────────────────────────────────────────────────────────────
 
