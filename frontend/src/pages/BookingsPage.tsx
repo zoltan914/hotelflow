@@ -117,7 +117,7 @@ export default function BookingsPage() {
         try {
             const createdReview = await createReview(bookingId, newRievew)
             setAllBookings(prev => prev.map(d => d.id === bookingId ? {...d, review: createdReview.data} : d))
-            addToast('Az értékelés sikeresen elküldve')
+            addToast(`Köszönjük a visszajelzést! ${'★'.repeat(newRievew.stars)}`)
             setSelectedId(null)
         } catch (err: any) {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
