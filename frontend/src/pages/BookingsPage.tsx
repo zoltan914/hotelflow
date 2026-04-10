@@ -168,12 +168,11 @@ export default function BookingsPage() {
                             const isReviewOpen = selectedId === booking?.id
                             return (
                                 <>
-                                    <tr key={`booking-row-${booking.id}`}>
+                                    <tr key={`booking-row-${booking.id}`} style={{cursor: booking?.review ? 'pointer' : ''}}>
                                         <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                         <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                         <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                         <td 
-                                          style={{cursor: booking?.review ? 'pointer' : 'not-allowed'}}
                                           onClick={() => {
                                             if (!booking.review) return;
                                             if (selectedId === booking.id) {
