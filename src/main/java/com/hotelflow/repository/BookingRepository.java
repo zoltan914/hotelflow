@@ -19,10 +19,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         AND b.room.id = :roomId
         AND (
             b.checkOutDate IS NULL
-            AND b.status = :bookingStatus
-        ) OR (
-            :checkInDateRequest <= b.checkOutDate
-            AND :checkOutDateRequest >= b.checkInDate
+            OR (
+                :checkInDateRequest < b.checkOutDate
+                AND :checkOutDateRequest > b.checkInDate
+            )
         )
     """)
     boolean hasOverlappingBookingByDateAndStatus(

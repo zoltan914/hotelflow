@@ -15,7 +15,7 @@ export enum RoomType {
 }
 
 export enum BookingStatus {
-  PENDING="Beérkezett", ACTIVE="Aktív", CHECKED_OUT="Kijelentkezett", CANCELLED="Törölve"
+  PENDING="Függőben", ACTIVE="Aktív", CHECKED_OUT="Kijelentkezett", CANCELLED="Törölve"
 }
 
 // ─── RESPONSE TÍPUSOK (backend → frontend) ────────────────────────────────────

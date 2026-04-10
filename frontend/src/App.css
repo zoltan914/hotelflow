@@ -725,6 +725,7 @@ tr:hover td { background: var(--panel-tint); }
   color: var(--gold);
   font-size: 0.78rem;
   margin-bottom: 3px;
+  cursor: pointer;
 }
 
 .review-block .review-comment {
