@@ -2,15 +2,20 @@ import { useEffect, useRef, useState } from "react";
 
 
 interface SearchInputProps {
+    value: string;
     onSearch: (value: string) => void;
     placeholder?: string;
     delay?: number;
 }
 
-export const SearchInput = ({ onSearch, placeholder = "Keresés...", delay = 400 }: SearchInputProps) => {
+export const SearchInput = ({ value, onSearch, placeholder = "Keresés...", delay = 400 }: SearchInputProps) => {
 
-    const [text, setText] = useState("");
+    const [text, setText] = useState(value);
     const [isSearching] = useState(false);
+
+    useEffect(() => {
+        setText(value);
+    }, [value]);
 
     const onSearchRef = useRef(onSearch)
     useEffect(() => { onSearchRef.current = onSearch }, [onSearch])

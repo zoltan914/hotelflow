@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { cancel, checkIn, checkOut, createBooking, createReview, getAllBookings, getAllGuests, getAllRooms, getAllWings } from "../services/api"
 import { BookingStatus, type ApiResponse, type Booking, type Guest, type Room, type Wing } from "../interfaces/interfaces"
 import { useToast } from "../context/ToastContext";
@@ -6,6 +6,8 @@ import { TableSeparator } from "../components/TableSeparator";
 import { usePageControls } from "../hooks/usePageControls";
 import { BookingFormFields } from "../components/BookingFormFields";
 import { toLocalDateString } from "../utils/dateutils";
+import { SearchInput } from "../components/SearchInput";
+import { normalize } from "../utils/textutils";
 
 const star = "⭐";
 
@@ -47,7 +49,7 @@ const EMPTY_REVIEW_FORM: ReviewForm = {
 
 export default function BookingsPage() {
     const { addToast } = useToast()
-    const { isFormOpen, showForm, clear } = usePageControls();
+    const { isFormOpen, showForm, clear, isFilterBarOpen, showFilterBar } = usePageControls();
     
     const [allBookings, setAllBookings] = useState<Booking[]>([])
     const [allRooms, setAllRooms] = useState<Room[]>([])
@@ -55,6 +57,10 @@ export default function BookingsPage() {
     const [allGuests, setAllGuests] = useState<Guest[]>([])
 
     const [selectedId, setSelectedId] = useState<number | null>(null)
+
+    const [selectedWingId, setSelectedWingId] = useState<number | null>(null)
+    const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null)
+    const [debouncedSearch, setDebouncedSearch] = useState(""); // Csak a kész értéket tároljuk
 
     const [newRievew, setNewReview] = useState<ReviewForm>(EMPTY_REVIEW_FORM)
     const updateNewReview = (field: keyof ReviewForm, value: string | number | null) => {
@@ -65,7 +71,7 @@ export default function BookingsPage() {
     const updateNewBooking = (field: keyof BookingForm, value: string | number | Date | null) => {
         setNewBooking(prev => ({ ...prev, [field]: value}))
     }
-  
+
     useEffect(() => {
         const fetchData = async () => {
             const [bookingsRes, roomsRes, wingsRes, guestRes] 
@@ -77,6 +83,18 @@ export default function BookingsPage() {
         }
         fetchData()
     }, [])
+
+    
+    const filteredBookings = useMemo(() => {
+        const cleanSearch = normalize(debouncedSearch);
+        return allBookings
+                .filter(b => !selectedWingId || b.wingId === selectedWingId)
+                .filter(b => !selectedRoomId || b.roomId === selectedRoomId)
+                .filter(b => 
+                    allGuests.some(g => g.id === b.guestId && normalize(g.name).includes(cleanSearch))
+                )
+    }, [allBookings, allGuests, selectedWingId, selectedRoomId, debouncedSearch])
+    
 
     const handleOperations = async (bookingId: number, key: Ops) => {
         if (!bookingId || !operationMap[key]) return;
@@ -131,9 +149,11 @@ export default function BookingsPage() {
             <div className="show-form-wrapper">
                 <h2>Foglalások</h2>
                 <button className="btn btn-primary" onClick={showForm}> ＋ </button>
+                <button className="btn btn-ghost" onClick={showFilterBar}><span>🔍</span></button>
                 <button className="btn btn-ghost" onClick={() => {
                     clear()
                     setSelectedId(null)
+                    setDebouncedSearch('')
                 }}> ✕ </button>
             </div>
             <p className="page-desc">Foglalások felvétele, értékelés hozzáadása, státusz műveletek.</p>
@@ -144,6 +164,54 @@ export default function BookingsPage() {
                 onCreate={handleCreateBooking}
                 onClose={clear}
             />}
+
+            {isFilterBarOpen &&
+                <div className="filter-controls">
+                    <div className="filter-bar">
+                        <div className="elem">
+                            <label className="bold">Szárnyak: </label>
+                            <div className={`filter-chip ${selectedWingId === null ? 'active' : ''}`} onClick={() => setSelectedWingId(null)}>Összes</div>
+                            {allWings.map(wing => 
+                                <div 
+                                    key={`filter-wing-${wing.id}`} 
+                                    className={`filter-chip ${selectedWingId === wing.id ? 'active' : ''}`} 
+                                    onClick={() => setSelectedWingId(wing.id)}
+                                >
+                                    {wing.name}
+                                </div>
+                            )}
+                        </div>
+                        <div className="elem">
+                            <label className="bold">Szobák: </label>
+                            <div className={`filter-chip ${selectedRoomId === null ? 'active' : ''}`} onClick={() => setSelectedRoomId(null)}>Összes</div>
+                            {allRooms.map(room => 
+                                <div 
+                                    key={`filter-room-${room.id}`} 
+                                    className={`filter-chip ${selectedRoomId === room.id ? 'active' : ''}`} 
+                                    onClick={() => setSelectedRoomId(room.id)}
+                                >
+                                    {room.roomNumber}
+                                </div>
+                            )}
+                        </div>
+                        <div className="elem">
+                            <label className="bold">Keresés név alapján</label>
+                            <SearchInput
+                                value={debouncedSearch}
+                                onSearch={(val) => setDebouncedSearch(val)} 
+                                placeholder="Keress vendég név alapján..."
+                            />
+                        </div>
+                        <div className="elem">
+                            <button className="btn btn-ghost" onClick={() => {
+                                setSelectedRoomId(null)
+                                setSelectedWingId(null)
+                                setDebouncedSearch('')
+                            }}>Alaphelyzet</button>
+                        </div>
+                    </div>
+                </div>
+            }
 
             <div className="table-wrapper">
                 <table>
@@ -161,7 +229,7 @@ export default function BookingsPage() {
                     </thead>
                     
                     <tbody>
-                        {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.PENDING).map(booking => {
+                        {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.PENDING).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
                                     <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
@@ -182,7 +250,7 @@ export default function BookingsPage() {
                     <TableSeparator />
                     
                     <tbody>
-                        {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.ACTIVE).map(booking => {
+                        {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.ACTIVE).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
                                     <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
@@ -200,7 +268,7 @@ export default function BookingsPage() {
                     <TableSeparator />
 
                     <tbody>
-                        {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.CHECKED_OUT).map(booking => {
+                        {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.CHECKED_OUT).map(booking => {
                             const isReviewOpen = selectedId === booking?.id
                             return (
                                 <React.Fragment key={`checked-out-${booking.id} `}>
@@ -279,7 +347,7 @@ export default function BookingsPage() {
                     <TableSeparator />
 
                     <tbody>
-                        {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.CANCELLED).map(booking => {
+                        {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.CANCELLED).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
                                     <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>

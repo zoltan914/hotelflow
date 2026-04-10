@@ -591,10 +591,13 @@ tr:hover td { background: var(--panel-tint); }
   flex-wrap: wrap;
   align-items: flex-start;
   margin-bottom: 18px;
+  width: 100%;
 }
 .filter-bar .elem {
   display: flex;
+  align-items: center;
   gap: 10px;
+  width: 100%;
 }
 
 .filter-chip {
