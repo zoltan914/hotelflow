@@ -917,6 +917,10 @@ tr:hover td { background: var(--panel-tint); }
   font-size: 0.85rem;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .workspace { grid-template-columns: 1fr; }

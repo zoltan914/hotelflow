@@ -93,7 +93,7 @@ export default function BookingsPage() {
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.PENDING).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
-                                    <td>{allGuests.find(g => g.id === booking.guestId)?.name}</td>
+                                    <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                     <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
@@ -103,7 +103,6 @@ export default function BookingsPage() {
                                     <td>
                                         <button className="btn btn-primary" onClick={() => handleCheckIn(booking.id)}>Bejelentkezés</button>
                                         <button style={{marginLeft: '10px'}} className="btn btn-primary" onClick={() => handleCancel(booking.id)}>Lemondás</button>
-
                                     </td>
                                 </tr>
                             )
@@ -115,7 +114,7 @@ export default function BookingsPage() {
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.ACTIVE).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
-                                    <td>{allGuests.find(g => g.id === booking.guestId)?.name}</td>
+                                    <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                     <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
@@ -135,12 +134,13 @@ export default function BookingsPage() {
                             return (
                                 <>
                                     <tr key={`booking-row-${booking.id}`}>
-                                        <td>{allGuests.find(g => g.id === booking.guestId)?.name}</td>
+                                        <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                         <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                         <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                         <td 
-                                          style={{cursor: 'pointer'}}
+                                          style={{cursor: booking?.review ? 'pointer' : 'not-allowed'}}
                                           onClick={() => {
+                                            if (!booking.review) return;
                                             if (selectedId === booking.id) {
                                                 setSelectedId(null)
                                             } else {
@@ -153,27 +153,32 @@ export default function BookingsPage() {
                                         <td>{booking.checkInDate.toString()}</td>
                                         <td>{booking.checkOutDate.toString()}</td>
                                         <td><span className="table-badge green">{BookingStatus[booking.status]}</span></td>
-                                        <td>{!booking.review && <button className="btn btn-primary">Értékelés</button>}</td>
+                                        <td>{!booking.review && <button className="btn btn-primary" onClick={() => setSelectedId(booking.id)}>Értékelés</button>}</td>
                                     </tr>
-                                    {isReviewOpen && booking.review && 
-                                        <tr
-                                          className="review-display"
-                                        >
+                                    {isReviewOpen ? booking.review ?
+                                        <tr>
                                             <td colSpan={5}>{booking.review.comment}</td>
                                             <td colSpan={3}>{booking.review.specialRequests}</td>
                                         </tr>
+                                        :
+                                        <tr>
+                                            <td colSpan={2}>1</td>
+                                            <td colSpan={3}>2</td>
+                                            <td colSpan={3}>3</td>
+                                        </tr>
+                                        :''
                                     }
                                 </>
                             )
                         })}
                     </tbody>
                     <Separator />
-                    
+
                     <tbody>
                         {allBookings.filter(b => BookingStatus[b.status] === BookingStatus.CANCELLED).map(booking => {
                             return (
                                 <tr key={`booking-row-${booking.id}`}>
-                                    <td>{allGuests.find(g => g.id === booking.guestId)?.name}</td>
+                                    <td className="bold">{allGuests.find(g => g.id === booking.guestId)?.name}</td>
                                     <td>{allRooms.find(r => r.id === booking.roomId)?.roomNumber}</td>
                                     <td>{allWings.find(w => w.id === booking.wingId)?.name}</td>
                                     <td></td>
