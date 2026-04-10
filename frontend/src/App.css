@@ -34,8 +34,8 @@
   --teal-bg:      rgba(15, 118, 110, 0.08);
   --gold:         #b45309;
   --gold-bg:      rgba(180, 83, 9, 0.08);
-  --silver:       #a5a09d;
-  --silver-bg:    #d1cdcb;
+  --silver:       #807976;
+  --silver-bg:    #e2dedb;
 
   --radius:       8px;
   --radius-lg:    12px;
@@ -725,7 +725,6 @@ tr:hover td { background: var(--panel-tint); }
   color: var(--gold);
   font-size: 0.78rem;
   margin-bottom: 3px;
-  cursor: pointer;
 }
 
 .review-block .review-comment {

@@ -1,9 +1,21 @@
 import { useEffect, useMemo, useState } from "react"
-import { cancel, checkIn, checkOut, getAllBookings, getAllGuests, getAllRooms, getAllWings } from "../services/api"
+import { cancel, checkIn, checkOut, createReview, getAllBookings, getAllGuests, getAllRooms, getAllWings, updateReview } from "../services/api"
 import { BookingStatus, type Booking, type Guest, type Room, type Wing } from "../interfaces/interfaces"
 import { useToast } from "../context/ToastContext";
 
 const star = "⭐";
+
+export type ReviewForm = {
+    stars: number,
+    comment: string,
+    specialRequests: string
+}
+
+const EMPTY_REVIEW_FORM: ReviewForm = { 
+    stars: 5,
+    comment: '',
+    specialRequests: ''
+}
 
 export default function BookingsPage() {
     const { addToast } = useToast()
@@ -15,6 +27,11 @@ export default function BookingsPage() {
 
     const [selectedId, setSelectedId] = useState<number | null>(null)
 
+    const [newRievew, setNewReview] = useState<ReviewForm>(EMPTY_REVIEW_FORM)
+    const updateNewReview = (field: keyof ReviewForm, value: string | number | null) => {
+        setNewReview(prev => ({ ...prev, [field]: value }))
+    }
+  
     useEffect(() => {
         const fetchData = async () => {
             const [bookingsRes, roomsRes, wingsRes, guestRes] 
@@ -33,6 +50,7 @@ export default function BookingsPage() {
             const checkedInBooking = await checkIn(bookingId)
             setAllBookings(prev => prev.map(d => d.id === bookingId ? checkedInBooking.data : d))
             addToast('A foglalás adatai sikeresen frissítve')
+            setSelectedId(null)
         } catch (err: any) {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
         }
@@ -44,6 +62,7 @@ export default function BookingsPage() {
             const checkedOutBooking = await checkOut(bookingId)
             setAllBookings(prev => prev.map(d => d.id === bookingId ? checkedOutBooking.data : d))
             addToast('A foglalás adatai sikeresen frissítve')
+            setSelectedId(null)
         } catch (err: any) {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
         }
@@ -55,6 +74,22 @@ export default function BookingsPage() {
             const cancelledBooking = await cancel(bookingId)
             setAllBookings(prev => prev.map(d => d.id === bookingId ? cancelledBooking.data : d))
             addToast('A foglalás adatai sikeresen frissítve')
+            setSelectedId(null)
+        } catch (err: any) {
+            addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
+        }
+    }
+
+    const handleCreateReview = async (bookingId: number) => {
+        if (!newRievew.stars) {
+            addToast('A csillagok számának megadása kötelező!', 'error');
+            return
+        }
+        try {
+            const createdReview = await createReview(bookingId, newRievew)
+            setAllBookings(prev => prev.map(d => d.id === bookingId ? {...d, review: createdReview.data} : d))
+            addToast('Az értékelés sikeresen elküldve')
+            setSelectedId(null)
         } catch (err: any) {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
         }
@@ -99,7 +134,7 @@ export default function BookingsPage() {
                                     <td></td>
                                     <td>{booking.checkInDate.toString()}</td>
                                     <td>{booking.checkOutDate.toString()}</td>
-                                    <td><span className="table-badge yellow">{BookingStatus[booking.status]}</span></td>
+                                    <td><span className="table-badge red">{BookingStatus[booking.status]}</span></td>
                                     <td>
                                         <button className="btn btn-primary" onClick={() => handleCheckIn(booking.id)}>Bejelentkezés</button>
                                         <button style={{marginLeft: '10px'}} className="btn btn-primary" onClick={() => handleCancel(booking.id)}>Lemondás</button>
@@ -156,17 +191,45 @@ export default function BookingsPage() {
                                         <td>{!booking.review && <button className="btn btn-primary" onClick={() => setSelectedId(booking.id)}>Értékelés</button>}</td>
                                     </tr>
                                     {isReviewOpen ? booking.review ?
-                                        <tr>
-                                            <td colSpan={5}>{booking.review.comment}</td>
-                                            <td colSpan={3}>{booking.review.specialRequests}</td>
+                                        <tr className="review-block">
+                                            <td colSpan={5}><strong>Megjegyzés:  </strong>{booking.review.comment}</td>
+                                            <td colSpan={3}><strong>Speciális:  </strong>{booking.review.specialRequests}</td>
                                         </tr>
                                         :
-                                        <tr>
-                                            <td colSpan={2}>1</td>
-                                            <td colSpan={3}>2</td>
-                                            <td colSpan={3}>3</td>
-                                        </tr>
-                                        :''
+                                        <>
+                                            <tr className="review-block">
+                                                <td className="rating-display" colSpan={2} >
+                                                    <label>Csillagok</label>
+                                                    <input 
+                                                        type="number"
+                                                        max={5}
+                                                        min={1}
+                                                        value={newRievew?.stars}
+                                                        onChange={e => updateNewReview('stars', Number(e.target.value))}
+                                                    />
+                                                </td>
+                                                <td className="review-comment" colSpan={3}>
+                                                    <label>Mejegyzés</label>
+                                                    <textarea
+                                                        value={newRievew?.comment}
+                                                        onChange={e => updateNewReview('comment', e.target.value)}
+                                                    />
+                                                </td>
+                                                <td className="review-requests" colSpan={3}>
+                                                    <label>Speciális kérések</label>
+                                                    <textarea 
+                                                        value={newRievew?.specialRequests}
+                                                        onChange={e => updateNewReview('specialRequests', e.target.value)}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="review-block">
+                                                <td colSpan={8}>
+                                                    <button className="btn btn-primary" onClick={() => handleCreateReview(booking.id)}>Mentés</button>
+                                                </td>
+                                            </tr>
+                                        </>
+                                        :<></>
                                     }
                                 </>
                             )
@@ -184,7 +247,7 @@ export default function BookingsPage() {
                                     <td></td>
                                     <td>{booking.checkInDate.toString()}</td>
                                     <td>{booking.checkOutDate.toString()}</td>
-                                    <td><span className="table-badge red">{BookingStatus[booking.status]}</span></td>
+                                    <td><span className="table-badge silver">{BookingStatus[booking.status]}</span></td>
                                     <td></td>
                                 </tr>
                             )
