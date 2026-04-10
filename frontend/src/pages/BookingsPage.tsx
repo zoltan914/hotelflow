@@ -137,7 +137,11 @@ export default function BookingsPage() {
                 checkOutDate: newBooking.checkOutDate ? new Date(toLocalDateString(newBooking.checkOutDate)) : null
             })
             setAllBookings(prev => [...prev, createdBooking.data])
-            addToast('A foglalás sikeres');
+            const res = createdBooking.data
+            const roomNumber = allRooms.find(r => r.id === res.roomId)?.roomNumber
+            const beginDate = res.checkInDate
+            const endDate = res.checkOutDate
+            addToast(`Foglalás sikeresen rögzítve – ${roomNumber}-es szoba, ${beginDate} – ${endDate ? endDate : ''}.`);
             setNewBooking(EMPTY_BOOKING_FORM)
         } catch (err: any) {
             addToast(err.response?.data?.message || 'Nem sikerült menteni a változásokat', 'error')
