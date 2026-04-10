@@ -123,12 +123,12 @@ export default function GuestsPage() {
                                               GuestTier[guest.tier] === GuestTier.SILVER ? 'silver' :
                                               'blue'
                                         }`}
-                                        title="Beosztás"
+                                        title="Tagság"
                                     >
                                         {GuestTier[guest.tier]}
                                     </span>
                                     &nbsp;&nbsp;
-                                    <span className="badge green" title="Foglalások száma">
+                                    <span className="badge green" title="Összes foglalások száma">
                                         {guest.bookingCount}
                                     </span>
                                 </div>
