@@ -61,7 +61,7 @@ export default function BookingsPage() {
 
     const [selectedWingId, setSelectedWingId] = useState<number | null>(null)
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null)
-    const [debouncedSearch, setDebouncedSearch] = useState(""); // Csak a kész értéket tároljuk
+    const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [newRievew, setNewReview] = useState<ReviewForm>(EMPTY_REVIEW_FORM)
     const updateNewReview = (field: keyof ReviewForm, value: string | number | null) => {
