@@ -8,6 +8,7 @@ import { BookingFormFields } from "../components/BookingFormFields";
 import { toLocalDateString } from "../utils/dateutils";
 import { SearchInput } from "../components/SearchInput";
 import { normalize } from "../utils/textutils";
+import { ReviewFormFields } from "../components/ReviewFormFields";
 
 const star = "⭐";
 
@@ -35,7 +36,7 @@ const EMPTY_BOOKING_FORM : BookingForm = {
     checkOutDate: null
 }
 
-type ReviewForm = {
+export type ReviewForm = {
     stars: number,
     comment: string,
     specialRequests: string
@@ -227,7 +228,6 @@ export default function BookingsPage() {
                             <th>Műveletek</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                         {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.PENDING).map(booking => {
                             return (
@@ -248,7 +248,6 @@ export default function BookingsPage() {
                         })}
                     </tbody>
                     <TableSeparator />
-                    
                     <tbody>
                         {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.ACTIVE).map(booking => {
                             return (
@@ -266,7 +265,6 @@ export default function BookingsPage() {
                         })}
                     </tbody>
                     <TableSeparator />
-
                     <tbody>
                         {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.CHECKED_OUT).map(booking => {
                             const isReviewOpen = selectedId === booking?.id
@@ -301,43 +299,12 @@ export default function BookingsPage() {
                                             <td colSpan={3}><strong>Speciális:  </strong>{booking.review.specialRequests}</td>
                                         </tr>
                                         :
-                                        <>
-                                            <tr className="review-block">
-                                                <td className="rating-display" colSpan={2} >
-                                                    <label>Csillagok</label>
-                                                    <input 
-                                                        type="number"
-                                                        max={5}
-                                                        min={1}
-                                                        value={newRievew?.stars}
-                                                        onChange={e => updateNewReview('stars', Number(e.target.value))}
-                                                    />
-                                                </td>
-                                                <td className="review-comment" colSpan={3}>
-                                                    <label>Mejegyzés</label>
-                                                    <textarea
-                                                        value={newRievew?.comment}
-                                                        onChange={e => updateNewReview('comment', e.target.value)}
-                                                    />
-                                                </td>
-                                                <td className="review-requests" colSpan={3}>
-                                                    <label>Speciális kérések</label>
-                                                    <textarea 
-                                                        value={newRievew?.specialRequests}
-                                                        onChange={e => updateNewReview('specialRequests', e.target.value)}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr className="review-block">
-                                                <td colSpan={8}>
-                                                    <button className="btn btn-primary" onClick={() => handleCreateReview(booking.id)}
-                                                        style={{marginRight: '10px'}}>Mentés</button>
-                                                    <button className="btn btn-primary" onClick={() => setSelectedId(null)}>
-                                                        ✕
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </>
+                                        <ReviewFormFields 
+                                            valueState={newRievew}
+                                            onUpdate={updateNewReview}
+                                            onCreate={() => handleCreateReview(booking.id)}
+                                            onClose={() => setSelectedId(null)}
+                                        />
                                         :<></>
                                     }
                                 </React.Fragment>
@@ -345,7 +312,6 @@ export default function BookingsPage() {
                         })}
                     </tbody>
                     <TableSeparator />
-
                     <tbody>
                         {filteredBookings.filter(b => BookingStatus[b.status] === BookingStatus.CANCELLED).map(booking => {
                             return (
