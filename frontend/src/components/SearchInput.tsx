@@ -41,7 +41,10 @@ export const SearchInput = ({ value, onSearch, placeholder = "Keresés...", dela
                 {isSearching ? (
                     <div className="search-spinner"></div>
                 ) : (
-                    text && <button className="clear-btn" onClick={() => setText("")}>✕</button>
+                    text && <button className="clear-btn" onClick={() => {
+                        setText("")
+                        onSearch("")
+                    }}>✕</button>
                 )}
             </div>
         </div>
