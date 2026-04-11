@@ -2,6 +2,7 @@ package com.hotelflow.services.impl;
 
 import com.hotelflow.dto.review.ReviewCreateDto;
 import com.hotelflow.dto.review.ReviewUpdateDto;
+import com.hotelflow.exception.DuplicationException;
 import com.hotelflow.model.Booking;
 import com.hotelflow.model.Review;
 import com.hotelflow.repository.ReviewRepository;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.hotelflow.model.BookingStatus.CHECKED_OUT;
 
 @Service
 @Slf4j
@@ -38,6 +41,14 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Review createReview(Long bookingId, ReviewCreateDto request) {
         Booking booking = bookingService.getBookingById(bookingId);
+        boolean hasReview = reviewRepository.findByBookingId(bookingId)
+                .isPresent();
+        if (hasReview) {
+            throw new DuplicationException("A foglaláshoz már van értékelés rögzítve");
+        }
+        if (!booking.getStatus().equals(CHECKED_OUT)) {
+            throw new IllegalStateException("Értékelés csak CHECKED_OUT státuszú foglaláshoz adható");
+        }
         Review review = Review.builder()
                 .booking(booking)
                 .stars(request.stars())

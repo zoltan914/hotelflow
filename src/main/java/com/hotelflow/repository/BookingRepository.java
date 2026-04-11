@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -15,7 +16,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
         SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
         from Booking b
-        where b.status = :bookingStatus
+        where b.status in (:bookingStatuses)
         AND b.room.id = :roomId
         AND (
             (b.checkOutDate IS NULL)
@@ -30,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean hasOverlappingBookingByDateAndStatus(
             @Param("checkInDateRequest") LocalDate checkInDateRequest,
             @Param("checkOutDateRequest") LocalDate checkOutDateRequest,
-            @Param("bookingStatus") BookingStatus bookingStatus,
+            @Param("bookingStatuses") List<BookingStatus> bookingStatuses,
             @Param("roomId") Long roomId
     );
 

@@ -31,7 +31,7 @@ public class GuestServiceImpl implements GuestService {
     @Override
     public Guest getGuestById(Long id) {
         return guestRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("A vengéd nem található: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("A vendég nem található: " + id));
     }
 
     @Override

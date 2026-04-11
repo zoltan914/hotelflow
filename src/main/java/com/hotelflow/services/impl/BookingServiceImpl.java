@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.hotelflow.model.BookingStatus.*;
@@ -42,18 +43,43 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public Booking createBooking(BookingCreateDto request) {
         Room room = roomService.getRoomById(request.roomId());
-        boolean hasOverlappingBooking = bookingRepository
-                .hasOverlappingBookingByDateAndStatus(request.checkInDate(), request.checkOutDate(), ACTIVE, room.getId());
-        if (hasOverlappingBooking) {
-            throw new IllegalStateException("A vendégnek már van aktív foglalása erre az időszakra");
-        }
         Guest guest = guestService.getGuestById(request.guestId());
+
+        LocalDate now = LocalDate.now();
+        if (request.checkInDate().isBefore(now)) {
+            throw new IllegalStateException("Foglalás kezdetének dátuma csak jövőben lehetséges");
+        }
+        // BUG JAVÍTÁS: az eredeti feltétel fordítva volt (isBefore helyett isAfter kell)
+        if (request.checkOutDate() != null && !request.checkOutDate().isAfter(request.checkInDate())) {
+            throw new IllegalStateException("A kijelentkezés dátuma a bejelentkezés után kell legyen");
+        }
+
+        // 3. szabály: ACTIVE vagy PENDING átfedő foglalás ellenőrzése
+        boolean hasOverlappingBooking = bookingRepository
+                .hasOverlappingBookingByDateAndStatus(
+                        request.checkInDate(),
+                        request.checkOutDate(),
+                        List.of(ACTIVE, PENDING),
+                        room.getId()
+                );
+        if (hasOverlappingBooking) {
+            throw new IllegalStateException("A szoba a megadott időszakra már foglalt");
+        }
+
+        // 4. szabály: vendégnek nincs-e már ACTIVE foglalása
+        boolean guestHasActiveBooking = guest.getBookings().stream()
+                .anyMatch(b -> b.getStatus().equals(ACTIVE));
+        if (guestHasActiveBooking) {
+            throw new IllegalStateException("A vendégnek már van aktív foglalása");
+        }
+
         Booking booking = Booking.builder()
                 .guest(guest)
                 .room(room)
                 .checkInDate(request.checkInDate())
                 .checkOutDate(request.checkOutDate())
-                .status(PENDING).build();
+                .status(PENDING)
+                .build();
         return bookingRepository.save(booking);
     }
 

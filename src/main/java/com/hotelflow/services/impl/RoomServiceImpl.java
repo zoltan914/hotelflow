@@ -39,8 +39,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public Room createRoom(RoomCreateDto request) {
         Wing wing = wingService.getWingById(request.wingId());
+
+        if (roomRepository.existsByWingIdAndRoomNumber(request.wingId(), request.roomNumber())) {
+            throw new IllegalStateException("Ebben a szárnyban már létezik " + request.roomNumber() + " számú szoba.");
+        }
+
         Room room = Room.builder()
                 .roomNumber(request.roomNumber())
                 .wing(wing)
@@ -52,8 +58,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public Room updateRoom(Long id, RoomUpdateDto request) {
         Room room = getRoomById(id);
+        if (request.roomNumber() != null && !request.roomNumber().equals(room.getRoomNumber())) {
+            Long targetWingId = request.wingId() != null ? request.wingId() : room.getWing().getId();
+            if (roomRepository.existsByWingIdAndRoomNumber(targetWingId, request.roomNumber())) {
+                throw new IllegalStateException("Ebben a szárnyban már létezik " + request.roomNumber() + " számú szoba.");
+            }
+        }
         room.setRoomNumber(request.roomNumber() != null ?  request.roomNumber() : room.getRoomNumber());
         room.setType(request.roomType() != null ? request.roomType() : room.getType());
         room.setPricePerNight(request.pricePerNight() != null ?  request.pricePerNight() : room.getPricePerNight());

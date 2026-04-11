@@ -5,7 +5,6 @@ import com.hotelflow.dto.staff.StaffUpdateDto;
 import com.hotelflow.model.ServiceRequest;
 import com.hotelflow.model.Staff;
 import com.hotelflow.model.Wing;
-import com.hotelflow.repository.ServiceRequestRepository;
 import com.hotelflow.repository.StaffRepository;
 import com.hotelflow.services.StaffService;
 import com.hotelflow.services.WingService;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,7 +23,6 @@ public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
     private final WingService wingService;
-    private final ServiceRequestRepository serviceRequestRepository;
 
     @Override
     public List<Staff> getAllStaff() {
@@ -67,8 +64,7 @@ public class StaffServiceImpl implements StaffService {
     public void deleteStaff(Long id) {
         Staff staff = getStaffById(id);
         List<ServiceRequest> serviceRequests = staff.getServiceRequests();
-        boolean hasActiveServiceRequest = serviceRequests.stream()
-                .anyMatch(req -> req.getRequestDate().isAfter(LocalDate.now().minusDays(1)));
+        boolean hasActiveServiceRequest = !serviceRequests.isEmpty();
         if (hasActiveServiceRequest) {
             throw new IllegalStateException("Az alkalmazott nem törölhető, mert van aktív szolgáltatáskérése a jövőben");
         }
