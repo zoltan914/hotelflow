@@ -1,7 +1,7 @@
 import DatePicker from "react-datepicker";
-import { useGuests } from "../hooks/useGuests";
-import { useRooms } from "../hooks/useRooms";
-import type { BookingForm } from "../pages/BookingsPage";
+import { useGuests } from "../../hooks/useGuests";
+import { useRooms } from "../../hooks/useRooms";
+import type { BookingForm } from "../../pages/BookingsPage";
 
 
 interface WingFormFieldsProps {

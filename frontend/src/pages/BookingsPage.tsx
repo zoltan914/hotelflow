@@ -4,11 +4,11 @@ import { BookingStatus, type ApiResponse, type Booking, type Guest, type Room, t
 import { useToast } from "../context/ToastContext";
 import { TableSeparator } from "../components/TableSeparator";
 import { usePageControls } from "../hooks/usePageControls";
-import { BookingFormFields } from "../components/BookingFormFields";
+import { BookingFormFields } from "../components/formfields/BookingFormFields";
 import { toLocalDateString } from "../utils/dateutils";
 import { SearchInput } from "../components/SearchInput";
 import { normalize } from "../utils/textutils";
-import { ReviewFormFields } from "../components/ReviewFormFields";
+import { ReviewFormFields } from "../components/formfields/ReviewFormFields";
 
 const star = "⭐";
 

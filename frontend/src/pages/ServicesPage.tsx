@@ -3,7 +3,7 @@ import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { type ServiceRequest, ServiceType, type Guest, type Staff, GuestTier } from "../interfaces/interfaces";
 import { createServiceRequest, deleteServiceRequest, getAllGuests, getAllServiceRequest, getAllStaff } from "../services/api";
-import { ServiceFormFields } from "../components/ServiceFormFields";
+import { ServiceFormFields } from "../components/formfields/ServiceFormFields";
 import { toLocalDateString } from "../utils/dateutils";
 import { SearchInput } from "../components/SearchInput";
 import { normalize } from "../utils/textutils";

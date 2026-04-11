@@ -3,7 +3,7 @@ import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { createStaff, deleteStaff, getAllStaff, getAllWings, updateStaff } from "../services/api";
 import { StaffRole, type Staff, type Wing } from "../interfaces/interfaces";
-import { StaffFormFields } from "../components/StaffFormFields";
+import { StaffFormFields } from "../components/formfields/StaffFormFields";
 
 export type StaffForm = {
   id: number | null,

@@ -1,4 +1,4 @@
-import type { WingForm } from "../pages/WingsPage";
+import type { WingForm } from "../../pages/WingsPage";
 
 interface WingFormFieldsProps {
     isEditing: boolean;

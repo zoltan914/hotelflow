@@ -1,8 +1,8 @@
 import DatePicker from "react-datepicker";
-import { useGuests } from "../hooks/useGuests";
-import { useStaff } from "../hooks/useStaff";
-import { ServiceType } from "../interfaces/interfaces";
-import type { ServiceForm } from "../pages/ServicesPage";
+import { useGuests } from "../../hooks/useGuests";
+import { useStaff } from "../../hooks/useStaff";
+import { ServiceType } from "../../interfaces/interfaces";
+import type { ServiceForm } from "../../pages/ServicesPage";
 
 
 interface ServiceFormFieldsProps {

@@ -3,7 +3,7 @@ import { createWing, deleteWing, getAllWings, updateWing } from "../services/api
 import { type Wing } from "../interfaces/interfaces"
 import { useToast } from "../context/ToastContext"
 import { usePageControls } from "../hooks/usePageControls"
-import { WingFormFields } from "../components/WingFormFields"
+import { WingFormFields } from "../components/formfields/WingFormFields"
 
 
 export type WingForm = {

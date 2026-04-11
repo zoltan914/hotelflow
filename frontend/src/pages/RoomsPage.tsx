@@ -3,7 +3,7 @@ import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { RoomType, type Room, type Wing } from "../interfaces/interfaces";
 import { createRoom, deleteRoom, getAllRooms, getAllWings, udpateRoom } from "../services/api";
-import { RoomFormFields } from "../components/RoomFormFields";
+import { RoomFormFields } from "../components/formfields/RoomFormFields";
 
 
 export type RoomForm = {

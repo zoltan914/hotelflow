@@ -1,5 +1,5 @@
-import { GuestTier } from "../interfaces/interfaces";
-import type { GuestForm } from "../pages/GuestsPage";
+import { GuestTier } from "../../interfaces/interfaces";
+import type { GuestForm } from "../../pages/GuestsPage";
 
 
 interface WingFormFieldsProps {

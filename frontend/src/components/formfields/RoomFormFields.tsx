@@ -1,38 +1,45 @@
-import { useWings } from "../hooks/useWings";
-import { StaffRole } from "../interfaces/interfaces";
-import type { StaffForm } from "../pages/StaffPage";
+import { useWings } from "../../hooks/useWings";
+import { RoomType } from "../../interfaces/interfaces";
+import type { RoomForm } from "../../pages/RoomsPage";
 
-interface WingFormFieldsProps {
+
+interface RoomFormFieldsProps {
     isEditing: boolean;
-    valueState: StaffForm | null;
-    onUpdate: (field: keyof Omit<StaffForm, 'id'>, value: string | number | StaffRole | null) => void;
+    valueState: RoomForm | null;
+    onUpdate: (field: keyof Omit<RoomForm, 'id'>, value: string | number | RoomType | null) => void;
     onCreate: () => void;
     onClose: () => void;
 }
 
-export const StaffFormFields = ( { isEditing, valueState, onUpdate, onCreate, onClose } :WingFormFieldsProps ) => {
+export const RoomFormFields = ( { isEditing, valueState, onUpdate, onCreate, onClose } :RoomFormFieldsProps ) => {
     const wings = useWings()
     return (
         <div className={isEditing ? 'form-row-editing' : 'form-row'}>
             <input 
                 type="text"
-                value={valueState?.name}
-                placeholder="Személyzet neve"
-                onChange={e => onUpdate('name', e.target.value)}
+                value={valueState?.roomNumber}
+                placeholder="Szoba száma"
+                onChange={e => onUpdate('roomNumber', e.target.value)}
             />
             <input 
-                type="text"
-                value={valueState?.email}
-                placeholder="Személyzet email címe"
-                onChange={e => onUpdate('email', e.target.value)}
+                type="number"
+                value={valueState?.pricePerNight ?? 10}
+                placeholder="Szoba ára"
+                onChange={e => onUpdate('pricePerNight', Number(e.target.value))}
+            />
+            <input 
+                type="number"
+                value={valueState?.capacity ?? 4}
+                placeholder="Férőhelyek száma"
+                onChange={e => onUpdate('capacity', Number(e.target.value))}
             />
             <select
-                value={valueState?.role ?? ''}
-                onChange={e => onUpdate('role', e.target.value)}
+                value={valueState?.roomType ?? ''}
+                onChange={e => onUpdate('roomType', e.target.value)}
             >
-                <option value="" disabled>Válassz beosztást...</option>
-                {Object.entries(StaffRole).map(([key, value]) => (
-                    <option key={`role-${key}`} value={key}>{value}</option>
+                <option value="" disabled>Válassz típust...</option>
+                {Object.entries(RoomType).map(([key, value]) => (
+                    <option key={`roomtype-${key}`} value={key}>{value}</option>
                 ))}
             </select>
             <select

@@ -3,7 +3,7 @@ import { useToast } from "../context/ToastContext";
 import { usePageControls } from "../hooks/usePageControls";
 import { GuestTier, type Guest } from "../interfaces/interfaces";
 import { createGuest, deleteGuest, getAllGuests, udpateGuest } from "../services/api";
-import { GuestFormFields } from "../components/GuestFormFields";
+import { GuestFormFields } from "../components/formfields/GuestFormFields";
 
 export type GuestForm = {
     id: number | null,

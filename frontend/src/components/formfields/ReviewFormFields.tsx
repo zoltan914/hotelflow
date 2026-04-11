@@ -1,4 +1,4 @@
-import type { ReviewForm } from "../pages/BookingsPage";
+import type { ReviewForm } from "../../pages/BookingsPage";
 
 
 
