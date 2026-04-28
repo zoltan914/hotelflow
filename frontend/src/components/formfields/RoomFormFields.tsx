@@ -23,13 +23,13 @@ export const RoomFormFields = ( { isEditing, valueState, onUpdate, onCreate, onC
             />
             <input 
                 type="number"
-                value={valueState?.pricePerNight ?? 10}
+                value={valueState?.pricePerNight ?? ''}
                 placeholder="Szoba ára"
                 onChange={e => onUpdate('pricePerNight', Number(e.target.value))}
             />
             <input 
                 type="number"
-                value={valueState?.capacity ?? 4}
+                value={valueState?.capacity ?? ''}
                 placeholder="Férőhelyek száma"
                 onChange={e => onUpdate('capacity', Number(e.target.value))}
             />

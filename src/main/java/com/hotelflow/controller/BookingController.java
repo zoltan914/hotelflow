@@ -11,6 +11,7 @@ import com.hotelflow.model.Booking;
 import com.hotelflow.model.Review;
 import com.hotelflow.services.BookingService;
 import com.hotelflow.services.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingResponseDto> createBooking(
-            @RequestBody BookingCreateDto request
+            @Valid @RequestBody BookingCreateDto request
     ) {
         Booking booking = bookingService.createBooking(request);
         return ResponseEntity.ok(bookingMapper.toBookingResponseDto(booking));
@@ -78,7 +79,7 @@ public class BookingController {
     @PostMapping("/{id}/review")
     public ResponseEntity<ReviewResponseDto> createReview(
             @PathVariable Long id,
-            @RequestBody ReviewCreateDto request
+            @Valid @RequestBody ReviewCreateDto request
     ) {
         Review review = reviewService.createReview(id, request);
         return ResponseEntity.ok(reviewMapper.toReviewResponseDto(review));

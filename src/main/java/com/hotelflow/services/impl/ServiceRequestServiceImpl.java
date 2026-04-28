@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -38,6 +39,10 @@ public class ServiceRequestServiceImpl implements ServiceRequestService {
 
     @Override
     public ServiceRequest createServiceRequest(ServiceRequestCreateDto request) {
+        LocalDate today = LocalDate.now();
+        if (request.requestDate().isBefore(today)) {
+            throw new IllegalStateException("A szolgáltatás kérése nem lehet a múltban");
+        }
         Guest guest = guestService.getGuestById(request.guestId());
         Staff staff =  staffService.getStaffById(request.staffId());
         ServiceRequest serviceRequest = ServiceRequest.builder()

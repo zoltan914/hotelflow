@@ -1,8 +1,6 @@
 package com.hotelflow.dto.room;
 
-import com.hotelflow.model.GuestTier;
 import com.hotelflow.model.RoomType;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,10 +15,10 @@ public record RoomCreateDto(
         @NotNull
         RoomType roomType,
         @NotNull
-        @Min(1)
+        @Min(value = 1, message = "A szoba ára minimum 1")
         BigDecimal pricePerNight,
         @NotNull
-        @Min(1)
+        @Min(value = 1, message = "A szoba kapacitása minimum 1")
         int capacity
 ) {
 }

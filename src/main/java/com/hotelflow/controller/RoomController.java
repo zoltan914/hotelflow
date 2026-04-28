@@ -6,6 +6,7 @@ import com.hotelflow.dto.room.RoomUpdateDto;
 import com.hotelflow.mappers.RoomMapper;
 import com.hotelflow.model.Room;
 import com.hotelflow.services.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<RoomResponseDto> createRoom(
-            @RequestBody RoomCreateDto request
+            @Valid @RequestBody RoomCreateDto request
     ) {
         Room room = roomService.createRoom(request);
         return ResponseEntity.ok(roomMapper.toRoomResponseDto(room));

@@ -6,6 +6,7 @@ import com.hotelflow.dto.guest.GuestUpdateDto;
 import com.hotelflow.mappers.GuestMapper;
 import com.hotelflow.model.Guest;
 import com.hotelflow.services.GuestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class GuestController {
 
     @PostMapping
     public ResponseEntity<GuestResponseDto> createGuest(
-            @RequestBody GuestCreateDto request
+            @Valid @RequestBody GuestCreateDto request
     ) {
         Guest guest =  guestService.createGuest(request);
         return ResponseEntity.ok(guestMapper.toGuestResponseDto(guest));

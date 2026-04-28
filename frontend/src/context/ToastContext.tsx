@@ -10,14 +10,30 @@ const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = (message: string, type: ToastType = 'success') => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
+  const addToast = (message: string | Object, type: ToastType = 'success') => {
 
-    // Automatikus eltüntetés 3 másodperc után
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3000);
+    const baseId = Date.now();
+
+    // Segédfüggvény a hozzáadáshoz és az időzített törléshez
+    const pushToast = (msg: string, finalId: number, toastType: ToastType) => {
+      setToasts((prev) => [...prev, { id: finalId, message: msg, type: toastType }]);
+
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== finalId));
+      }, 3000);
+    };
+
+    if (typeof message === 'string') {
+      pushToast(message, baseId, type);
+    } else if (typeof message === 'object' && message !== null) {
+      // Kinyerjük az összes üzenetet (akár beágyazott 'message' kulcsról van szó, akár a Map-ről)
+      const errorEntries = Object.values(message);
+      
+      errorEntries.forEach((msg, i) => {
+        // Itt fontos, hogy mindegyiknek saját timeoutja legyen a saját ID-jára
+        pushToast(String(msg), baseId + i, 'error');
+      });
+    }
   };
 
   return (

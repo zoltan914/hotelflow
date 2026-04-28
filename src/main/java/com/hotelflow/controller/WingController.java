@@ -6,6 +6,7 @@ import com.hotelflow.dto.wing.WingUpdateDto;
 import com.hotelflow.mappers.WingMapper;
 import com.hotelflow.model.Wing;
 import com.hotelflow.services.WingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class WingController {
 
     @PostMapping
     public ResponseEntity<WingResponseDto> createWing(
-            @RequestBody WingCreateDto request
+            @Valid @RequestBody WingCreateDto request
     ) {
         Wing createdWing = wingService.createWing(request);
         return ResponseEntity.ok(wingMapper.toWingResponseDto(createdWing));

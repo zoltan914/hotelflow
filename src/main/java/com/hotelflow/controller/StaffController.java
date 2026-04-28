@@ -6,6 +6,7 @@ import com.hotelflow.dto.staff.StaffUpdateDto;
 import com.hotelflow.mappers.StaffMapper;
 import com.hotelflow.model.Staff;
 import com.hotelflow.services.StaffService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class StaffController {
 
     @PostMapping
     public ResponseEntity<StaffResponseDto> createStaff(
-            @RequestBody StaffCreateDto request
+            @Valid @RequestBody StaffCreateDto request
     ) {
         Staff staff = staffService.createStaff(request);
         return ResponseEntity.ok(staffMapper.toStaffResponseDto(staff));
