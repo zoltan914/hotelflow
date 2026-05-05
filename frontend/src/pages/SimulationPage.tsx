@@ -37,9 +37,9 @@ export default function SimulationPage() {
             <div className="sim-card">
                 <h3>🎲 Teszt adatok generálása</h3>
                 <p>
-                    Létrehoz osztályokat (Belgyógyászat, Sebészet, Neurológia), kórteremeket,
-                    orvosokat, betegeket, felvételeket (aktív és lezárt egyaránt),
-                    vizsgálatokat és diagnózisokat – felépítve a köztük lévő kapcsolatokat.
+                    Létrehoz 3 szárnyat (Északi, Déli, Keleti), szobákat, személyzetet,
+                    vendégeket, foglalásokat (aktív és lezárt egyaránt),
+                    szolgáltatáskéréseket és értékeléseket – felépítve a köztük lévő kapcsolatokat.
                     <br /><br />
                     <em>A meglévő adatok törlésre kerülnek.</em>
                 </p>
