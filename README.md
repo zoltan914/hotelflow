@@ -131,7 +131,7 @@ Gombra kattintva töltse fel az adatbázist:
 
 ---
 
-## API végpontok (ajánlott)
+## API végpontok
 
 ```
 GET/POST         /api/wings
