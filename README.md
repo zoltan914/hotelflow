@@ -386,21 +386,3 @@ src/
 ├── App.css        ← mellékelt CSS
 └── main.tsx
 ```
-
----
-
-## Összehasonlítás a MediCore-ral
-
-| MediCore | HotelFlow |
-|----------|-----------|
-| `Department` (Osztály) | `Wing` (Szárny) |
-| `Doctor` (Orvos) | `Staff` (Személyzet) |
-| `Patient` (Beteg) | `Guest` (Vendég) |
-| `Room` (Kórterem) | `Room` (Szoba) |
-| `Admission` (Felvétel) | `Booking` (Foglalás) |
-| `Examination` (Vizsgálat) | `ServiceRequest` (Szolgáltatáskérés) |
-| `Diagnosis` (Diagnózis) | `Review` (Értékelés) |
-| TAJ szám | Útlevélszám |
-| Vércsoport enum | Vendégkategória enum (STANDARD → PLATINUM) |
-| BNO kód | Csillagos értékelés (1–5★) |
-| ACTIVE / DISCHARGED | PENDING / ACTIVE / CHECKED_OUT / CANCELLED |
